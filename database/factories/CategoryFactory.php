@@ -23,7 +23,7 @@ class CategoryFactory extends Factory
     {
         return [
             'id'=>$this->faker->uuid,
-            'title'=>$this->faker->text()
+            'title'=>$this->faker->word
         ];
     }
 }

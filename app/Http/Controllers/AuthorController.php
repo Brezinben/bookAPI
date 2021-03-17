@@ -2,64 +2,91 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AuthorCollection;
+use App\Http\Resources\AuthorResource;
 use App\Models\Author;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
 
 class AuthorController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return AuthorCollection
      */
     public function index()
     {
-        //
+        $authors = Author::with('books')->get(['id', 'first_name', 'last_name', 'birth_date', 'death_date', 'created_at', 'updated_at']);
+        return new AuthorCollection($authors);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request)
     {
-        //
+        return Author::create([
+            'id' => Str::uuid(),
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'birth_date' => $request->birth_date,
+            'death_date' => $request->death_date,
+        ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Author  $author
-     * @return \Illuminate\Http\Response
+     * @param Author $author
+     * @return AuthorResource
      */
     public function show(Author $author)
     {
-        //
+        return new AuthorResource($author->load('books'));
     }
 
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Author  $author
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Author $author
+     * @return bool
      */
     public function update(Request $request, Author $author)
     {
-        //
+        return $author->update([
+            'id' => $author->id,
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'birth_date' => $request->birth_date,
+            'death_date' => $request->death_date,
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Author  $author
-     * @return \Illuminate\Http\Response
+     * @param Author $author
+     * @return Response
      */
     public function destroy(Author $author)
     {
-        //
+        $deleted = DB::transaction(function () use ($author) {
+            $r = $author->books()->count() > 0 ? $author->books()->detach() : true;
+            $m = $author->delete();
+            return $r && $m;
+        });
+        if ($deleted) {
+            return response('Deleted', 204)->header('Content-Type', 'text/plain');
+        }
+        abort(404);
     }
 }

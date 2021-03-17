@@ -2,84 +2,98 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 class BookController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return BookCollection
      */
     public function index()
     {
-        //
+        $books = Book::with(['category', 'author'])->get(['id', 'title', 'status', 'publish_date', 'created_at', 'updated_at', 'category_id', 'author_id']);
+        return new BookCollection($books);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return BookResource
      */
     public function store(Request $request)
     {
-        //
+        $book = Book::create([
+            'id' => Str::uuid(),
+            'title' => $request->title,
+            'publish_date' => $request->release_date,
+            'status' => $request->release_date,
+            'category_id' => $request->category,
+            'author_id' => $request->author
+        ]);
+        return $book;
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
+     * @param Book $book
+     * @return BookResource
      */
     public function show(Book $book)
     {
-        //
+        return new BookResource($book->load('author', 'category'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Book $book)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Book $book
+     * @return Book
      */
     public function update(Request $request, Book $book)
     {
-        //
+        $book->update([
+            'id' => Str::uuid(),
+            'title' => $request->title,
+            'publish_date' => $request->release_date,
+            'status' => $request->release_date,
+            'category_id' => $request->category,
+            'author_id' => $request->author
+        ]);
+        return $book;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\Http\Response
+     * @param Book $book
+     * @return Response
      */
-    public function destroy(Book $book)
+    public function destroy(Book $book): Response
     {
-        //
+        $deleted = false;
+
+        try {
+            $deleted = $book->delete();
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+
+        if ($deleted) {
+            return response('Deleted', 204)->header('Content-Type', 'text/plain');
+        }
+        abort(404);
     }
 }

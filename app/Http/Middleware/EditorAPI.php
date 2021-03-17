@@ -10,12 +10,13 @@ class EditorAPI
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request
+     * @param Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        return  $request->user()->tokenCan(['server:store','server:update']);
+        abort_if(!($request->user()->tokenCan('create') && $request->user()->tokenCan('update')), 401, "Bah on est pas Éditeur ?");
+        return $next($request);
     }
 }

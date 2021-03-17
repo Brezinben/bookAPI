@@ -80,13 +80,14 @@ class AuthorController extends Controller
     public function destroy(Author $author)
     {
         $deleted = DB::transaction(function () use ($author) {
-            $r = $author->books()->count() > 0 ? $author->books()->detach() : true;
-            $m = $author->delete();
-            return $r && $m;
+            if ($author->books()->count() > 0) {
+                return false;
+            }
+            return $author->delete();
         });
         if ($deleted) {
             return response('Deleted', 204)->header('Content-Type', 'text/plain');
         }
-        abort(404);
+        abort(404,"Erreur lors de la suppression");
     }
 }

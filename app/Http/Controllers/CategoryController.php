@@ -69,13 +69,14 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $deleted = DB::transaction(function () use ($category) {
-            $r = $category->books()->count() > 0 ? $category->books()->detach() : true;
-            $m = $category->delete();
-            return $r && $m;
+            if ($category->books()->count() > 0) {
+                return false;
+            }
+            return $category->delete();
         });
         if ($deleted) {
             return response('Deleted', 204)->header('Content-Type', 'text/plain');
         }
-        abort(404);
+        abort(404,"Erreur lors de la suppression");
     }
 }

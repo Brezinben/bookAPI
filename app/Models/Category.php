@@ -12,9 +12,7 @@ class Category extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $casts = [
-        'id' => 'string'
-    ];
+    protected $keyType = 'string';
 
     public function books(): HasMany
     {

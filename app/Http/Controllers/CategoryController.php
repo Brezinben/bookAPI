@@ -43,7 +43,7 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        return new CategoryResource($category->load('books'));
+        return new CategoryResource($category->load(['books' => fn($query) => $query->orderBy('publish_date', 'asc')]));
     }
 
     /**

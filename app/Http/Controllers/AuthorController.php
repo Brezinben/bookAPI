@@ -49,7 +49,7 @@ class AuthorController extends Controller
      */
     public function show(Author $author)
     {
-        return new AuthorResource($author->load('books'));
+        return new AuthorResource($author->load(['books' => fn($query) => $query->orderBy('publish_date', 'asc')]));
     }
 
 
@@ -88,6 +88,6 @@ class AuthorController extends Controller
         if ($deleted) {
             return response('Deleted', 204)->header('Content-Type', 'text/plain');
         }
-        abort(404,"Erreur lors de la suppression");
+        abort(404, "Erreur lors de la suppression");
     }
 }

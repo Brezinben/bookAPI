@@ -10,12 +10,9 @@ class Author extends Model
 {
     use HasFactory;
     use SoftDeletes;
+    protected $keyType = 'string';
 
-    protected $casts = [
-        'id' => 'string'
-    ];
-
-    public function books(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function books()
     {
         return $this->hasMany(Book::class);
     }

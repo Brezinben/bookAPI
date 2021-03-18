@@ -14,9 +14,8 @@ class CategoryResource extends JsonResource
      */
     public function toArray($request)
     {
-        $linksMovies=collect($this->whenLoaded('books'))->map(function ($book, $key) {
-            return '/api/books/' . $book->id;
-        });
+        $linksMovies = collect($this->whenLoaded('books'))->map(fn($book) => '/api/books/' . $book->id);
+
         return [
             'link'=>'/api/categories/'.$this->id,
             'id' => $this->id,

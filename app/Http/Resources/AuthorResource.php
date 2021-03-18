@@ -15,18 +15,21 @@ class AuthorResource extends JsonResource
      */
     public function toArray($request)
     {
-        $linksMovies = collect($this->whenLoaded('books'))->map(fn($book) => '/api/books/' . $book->id);
-
-        return [
-            'link' => '/api/authors/' . $this->id,
+        $booksLinks = collect($this->whenLoaded('books'))->map(fn($book) => route('books.show', compact('book')));
+        $data = [
+            'link' => route('authors.show', ['author' => $this]),
             "id" => $this->id,
             "first_name" => $this->first_name,
             "last_name" => $this->last_name,
             "birth_date" => $this->birth_date,
             "death_date" => $this->death_date,
             "created_at" => $this->created_at,
-            "updated_at" => $this->updated_at,
-            'books' => $linksMovies
+            "updated_at" => $this->updated_at
         ];
+        if ($booksLinks->isEmpty()) {
+            return $data;
+        }
+        $data['books'] = $booksLinks;
+        return $data;
     }
 }

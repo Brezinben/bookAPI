@@ -77,6 +77,6 @@ class CategoryController extends Controller
         if ($deleted) {
             return response('Deleted', 204)->header('Content-Type', 'text/plain');
         }
-        abort(404,"Erreur lors de la suppression");
+        abort(404, "Erreur lors de la suppression");
     }
 }

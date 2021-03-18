@@ -12,6 +12,7 @@ class Book extends Model
     use SoftDeletes;
 
     protected $keyType = 'string';
+    protected $guarded=[];
 
     public function author()
     {

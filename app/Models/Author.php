@@ -10,7 +10,9 @@ class Author extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
     protected $keyType = 'string';
+    protected $guarded=[];
 
     public function books()
     {

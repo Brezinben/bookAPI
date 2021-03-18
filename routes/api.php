@@ -1,6 +1,10 @@
 <?php
 
 
+use App\Http\Controllers\AuthorController;
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\BookRelationController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,12 +31,7 @@ Route::middleware(['jsonOnly'])->group(function () {
         'categories' => CategoryController::class],
         ['only' => ['index', 'show']]);
 
-//    Route::apiResources([
-//        'authors.books' => AuthorBookController::class,
-//        'books.author' => BookAuthorController::class,
-//        'books.category' => BookCategoryController::class,
-//        'categories.books' => CategoryBookController::class],
-//        ['only' => 'index']);
+    //Pour les relations des livres
     Route::apiResources([
         'authors.books' => BookRelationController::class,
         'books.author' => BookRelationController::class,
@@ -40,8 +39,7 @@ Route::middleware(['jsonOnly'])->group(function () {
         'categories.books' => BookRelationController::class],
         ['only' => 'index']);
 
-
-
+    //Methods quand on est éditor
     Route::middleware(['auth:sanctum', 'editor'])->group(function () {
         Route::apiResources([
             'authors' => AuthorController::class,

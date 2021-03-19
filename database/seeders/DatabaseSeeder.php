@@ -26,8 +26,8 @@ class DatabaseSeeder extends Seeder
             'remember_token' => Str::random(10)
         ]);
 
-        echo("Éditeur : " . $user->createToken('Editor', ['create', 'read', 'update'])->plainTextToken . "\n");
-        echo("Admin :   " . $user->createToken('Admin', ['create', 'read', 'update', 'delete'])->plainTextToken . "\n");
+        echo("Éditeur : " . substr($user->createToken('Editor', ['create', 'read', 'update'])->plainTextToken, 2) . "\n");
+        echo("Admin   : " . substr($user->createToken('Admin', ['create', 'read', 'update', 'delete'])->plainTextToken, 2) . "\n");
 
         Author::factory(50)->create();
         Category::factory(10)->create();

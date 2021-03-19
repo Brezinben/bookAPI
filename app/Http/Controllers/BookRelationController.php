@@ -20,10 +20,10 @@ class BookRelationController extends Controller
      * Renvoie une des relations des books
      *
      * @param Request $request
-     * @param $model
+     * @param Author|Book|Category $model
      * @return  ResourceCollection|JsonResource|Response
      */
-    public function index(Request $request, $model)
+    public function index(Request $request,$model)
     {
         switch ($request->route()->getName()) {
             case "books.category.index":

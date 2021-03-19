@@ -22,7 +22,7 @@ class AuthorFactory extends Factory
     public function definition()
     {
         return [
-            'id'=>$this->faker->uuid,
+            'id'=> $this->faker->uuid,
             'first_name'=>$this->faker->firstName,
             'last_name'=>$this->faker->lastName,
             'birth_date'=>$this->faker->date(),

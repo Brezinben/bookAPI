@@ -56,15 +56,14 @@ class CategoryController extends Controller
      *
      * @param Request $request
      * @param Category $category
-     * @return Response
+     * @return bool
      */
-    public function update(Request $request, Category $category): Response
+    public function update(Request $request, Category $category): bool
     {
         $request->validate([
             'title' => 'required|max:255|string',
         ]);
-
-        return $category->updade([
+        return $category->update([
             'id' => $category->id,
             'title' => $request->title
         ]);

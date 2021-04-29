@@ -9,6 +9,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class BookController extends Controller
 {
@@ -19,7 +20,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        $books = Book::with(['category', 'author'])->get(['id', 'title', 'status', 'publish_date', 'created_at', 'updated_at', 'category_id', 'author_id']);
+        $books = Book::with(['category', 'author'])->latest( 'publish_date')->get(['id', 'title', 'status', 'publish_date', 'created_at', 'updated_at', 'category_id', 'author_id']);
         return new BookCollection($books);
     }
 
@@ -32,11 +33,23 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required|max:255|string',
+            'release_date' => 'required|date',
+            'status' => [
+                'required',
+                Rule::in(['disponible', 'en_approvisionnement', 'non_édité']),
+            ],
+            'category' => 'required|exists:App\Models\Category,id',
+            'author' => 'required|exists:App\Models\Author,id',
+        ]);
+        echo ("ok");
+
         $book = Book::create([
             'id' => Str::uuid(),
             'title' => $request->title,
             'publish_date' => $request->release_date,
-            'status' => $request->release_date,
+            'status' => $request->status,
             'category_id' => $request->category,
             'author_id' => $request->author
         ]);
@@ -64,14 +77,26 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        $book->update([
-            'id' => Str::uuid(),
-            'title' => $request->title,
-            'publish_date' => $request->release_date,
-            'status' => $request->release_date,
-            'category_id' => $request->category,
-            'author_id' => $request->author
+        $request->validate([
+            'title' => 'required|max:255|string',
+            'publish_date' => 'required|date',
+            'status' => [
+                'required',
+                Rule::in(['disponible', 'en_approvisionnement', 'non_édité']),
+            ],
+            'category_id' => 'required|exists:App\Models\Category,id',
+            'author_id' => 'required|exists:App\Models\Author,id',
         ]);
+
+        $book->update([
+            'id' => $book->id,
+            'title' => $request->title,
+            'publish_date' => $request->publish_date,
+            'status' => $request->status,
+            'category_id' => $request->category_id,
+            'author_id' => $request->author_id
+        ]);
+
         return $book;
     }
 

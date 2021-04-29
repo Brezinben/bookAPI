@@ -18,7 +18,7 @@ class CreateAuthorsTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->date("birth_date");
-            $table->date('death_date');
+            $table->date('death_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

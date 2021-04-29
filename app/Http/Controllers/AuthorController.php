@@ -21,7 +21,7 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $authors = Author::with('books')->get(['id', 'first_name', 'last_name', 'birth_date', 'death_date', 'created_at', 'updated_at']);
+        $authors = Author::with('books')->orderBy("first_name")->get(['id', 'first_name', 'last_name', 'birth_date', 'death_date', 'created_at', 'updated_at']);
         return new AuthorCollection($authors);
     }
 
@@ -33,6 +33,13 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'first_name' => 'required|max:255|string',
+            'last_name' => 'required|max:255|string',
+            'birth_date' => 'required|date',
+            'death_date' => '',
+        ]);
+
         return Author::create([
             'id' => Str::uuid(),
             'first_name' => $request->first_name,
@@ -63,6 +70,13 @@ class AuthorController extends Controller
      */
     public function update(Request $request, Author $author)
     {
+        $request->validate([
+            'first_name' => 'required|max:255|string',
+            'last_name' => 'required|max:255|string',
+            'birth_date' => 'required|date',
+            'death_date' => 'required|date',
+        ]);
+
         return $author->update([
             'id' => $author->id,
             'first_name' => $request->first_name,

@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -18,7 +19,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::with('books')->get(['id', 'title', 'created_at', 'updated_at']);
+        $categories = Category::with('books')->orderBy('title')->get(['id', 'title', 'created_at', 'updated_at']);
         return new CategoryCollection($categories);
     }
 
@@ -30,7 +31,11 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required|max:255|string',
+        ]);
         return Category::create([
+            'id' => Str::uuid(),
             'title' => $request->title
         ]);
     }
@@ -53,9 +58,14 @@ class CategoryController extends Controller
      * @param Category $category
      * @return Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Category $category): Response
     {
+        $request->validate([
+            'title' => 'required|max:255|string',
+        ]);
+
         return $category->updade([
+            'id' => $category->id,
             'title' => $request->title
         ]);
     }

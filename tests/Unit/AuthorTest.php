@@ -22,7 +22,8 @@ class AuthorTest extends TestCase
 
     public function testUpdate()
     {
-        $author = Author::first();
+        Author::factory(1)->create();
+        $author = Author::all()->last();
         $data = ['first_name' => 'John', 'last_name' => 'DOE', 'birth_date' => '2002-06-26', 'death_date' => '2003-06-26'];
 
         $response = $this

@@ -20,7 +20,8 @@ class CategoryResource extends JsonResource
         $data = [
             'link' => route('categories.show', ['category' => $this]),
             'id' => $this->id,
-            'title' => $this->title
+            'title' => $this->title,
+            'book_count' => count($this->books)
         ];
 
         if ($booksLinks->isEmpty()) {

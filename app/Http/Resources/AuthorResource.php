@@ -24,7 +24,8 @@ class AuthorResource extends JsonResource
             "birth_date" => $this->birth_date,
             "death_date" => $this->death_date,
             "created_at" => $this->created_at,
-            "updated_at" => $this->updated_at
+            "updated_at" => $this->updated_at,
+            'book_count' => count($this->books),
         ];
         if ($booksLinks->isEmpty()) {
             return $data;

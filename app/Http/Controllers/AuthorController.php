@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\AuthorCollection;
 use App\Http\Resources\AuthorResource;
 use App\Models\Author;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -74,7 +73,7 @@ class AuthorController extends Controller
             'first_name' => 'required|max:255|string',
             'last_name' => 'required|max:255|string',
             'birth_date' => 'required|date',
-            'death_date' => 'required|date',
+            'death_date' => '',
         ]);
 
         return $author->update([

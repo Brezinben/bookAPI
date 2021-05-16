@@ -35,7 +35,7 @@ class BookController extends Controller
     {
         $request->validate([
             'title' => 'required|max:255|string',
-            'release_date' => 'required|date',
+            'publish_date' => 'required|date',
             'status' => [
                 'required',
                 Rule::in(['disponible', 'en_approvisionnement', 'non_édité']),
@@ -48,7 +48,7 @@ class BookController extends Controller
         $book = Book::create([
             'id' => Str::uuid(),
             'title' => $request->title,
-            'publish_date' => $request->release_date,
+            'publish_date' => $request->publish_date,
             'status' => $request->status,
             'category_id' => $request->category,
             'author_id' => $request->author

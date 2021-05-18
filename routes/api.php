@@ -44,9 +44,10 @@ Route::middleware(['jsonOnly'])->group(function () {
     Route::middleware(['auth:sanctum', 'editor'])->group(function () {
         //Pour checker le token du user
         Route::get("checkToken", function () {
-            $text = "Vous êtes éditeur.";
+           // $text = "Vous êtes éditeur.";
+            $text = "editor";
             if (request()->user()->tokenCan('delete')) {
-                $text = "Vous êtes Admin.";
+                $text = "admin";
             }
             return response(Json::encode($text), 200);
         });

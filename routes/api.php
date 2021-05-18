@@ -7,6 +7,7 @@ use App\Http\Controllers\BookRelationController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Psy\Util\Json;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,15 @@ Route::middleware(['jsonOnly'])->group(function () {
 
     //Methods quand on est éditor
     Route::middleware(['auth:sanctum', 'editor'])->group(function () {
+        //Pour checker le token du user
+        Route::get("checkToken", function () {
+            $text = "Vous êtes éditeur.";
+            if (request()->user()->tokenCan('delete')) {
+                $text = "Vous êtes Admin.";
+            }
+            return response(Json::encode($text), 200);
+        });
+
         Route::apiResources([
             'authors' => AuthorController::class,
             'books' => BookController::class,
